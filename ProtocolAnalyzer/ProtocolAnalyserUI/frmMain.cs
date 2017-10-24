@@ -84,7 +84,7 @@ namespace ProtocolAnalyzerUI
                 this.filePathControl.Enabled = false;
                 this.tbxMessages.Clear();
 
-                _Agent.StartWithConfig(this.commControl.Config);
+                _Agent.StartWithConfig(this.commControl.Config, this.filePathControl.FullPath);
             }
             else
             {

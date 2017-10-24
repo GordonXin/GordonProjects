@@ -9,14 +9,15 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ProtocolAnalyzerLib</RootNamespace>
     <AssemblyName>ProtocolAnalyzerLib</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -24,12 +25,15 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SapphireXml">
+      <HintPath>bin\SapphireXml.DLL</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,21 +44,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Defines.cs" />
     <Compile Include="Functions\Function.cs" />
     <Compile Include="Functions\FunctionManager.cs" />
     <Compile Include="Functions\LoadFunction.cs" />
     <Compile Include="Functions\OperateFunction.cs" />
     <Compile Include="Functions\UnloadFunction.cs" />
+    <Compile Include="KPI\KPI.cs" />
+    <Compile Include="KPI\KPIManager.cs" />
     <Compile Include="Locations\Location.cs" />
     <Compile Include="Locations\LocationManager.cs" />
     <Compile Include="Locations\Slot.cs" />
-    <Compile Include="Messages\MessageError.cs" />
+    <Compile Include="Messages\MessageInfo.cs" />
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\ReportEventMessage.cs" />
-    <Compile Include="Messages\ReportKPIMessage.cs" />
     <Compile Include="Messages\ReportLocationMessage.cs" />
     <Compile Include="Messages\ReportResultMessage.cs" />
-    <Compile Include="Messages\MessageEvent.cs" />
     <Compile Include="Messages\MessageKPI.cs" />
     <Compile Include="Messages\MessageResult.cs" />
     <Compile Include="ProtocolAnalyzer.cs" />

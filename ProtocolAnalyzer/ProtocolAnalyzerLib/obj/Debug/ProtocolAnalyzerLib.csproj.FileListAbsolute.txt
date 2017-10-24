@@ -5,6 +5,8 @@ D:\Code\ProtocolAnalyzer\ProtocolAnalyzerLib\obj\Debug\ProtocolAnalyzerLib.dll
 D:\Code\ProtocolAnalyzer\ProtocolAnalyzerLib\obj\Debug\ProtocolAnalyzerLib.pdb
 D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyzerLib\bin\Debug\ProtocolAnalyzerLib.dll
 D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyzerLib\bin\Debug\ProtocolAnalyzerLib.pdb
-D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyzerLib\obj\Debug\ProtocolAnalyzerLib.csprojResolveAssemblyReference.cache
 D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyzerLib\obj\Debug\ProtocolAnalyzerLib.dll
 D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyzerLib\obj\Debug\ProtocolAnalyzerLib.pdb
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyzerLib\bin\Debug\SapphireXml.DLL
+D:\Code\GordonProjects\ProtocolAnalyzer\bin\ProtocolAnalyzerLib.dll
+D:\Code\GordonProjects\ProtocolAnalyzer\bin\ProtocolAnalyzerLib.pdb

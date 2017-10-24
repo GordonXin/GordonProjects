@@ -4,34 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProtocolTesterLib.Messages
+namespace ProtocolAnalyzerLib
 {
     public class Message
     {
-        public class MessageInfo
-        {
-            public readonly string MsgString;
-            public readonly MessageMode MsgMode;
-            public readonly DateTime MsgTime;
-
-            public MessageInfo(string str, MessageMode mode, DateTime time)
-            {
-                str = str != null ? string.Copy(str) : string.Empty;
-                if (str.EndsWith("\r"))
-                    str = str.Remove(str.Length - 1);
-
-                MsgString = str;
-                MsgMode = mode;
-                MsgTime = time != null ? time : DateTime.Now;
-            }
-        }
-
-        public enum MessageMode : short
+        #region [ Definition ]
+        public enum CommMode : short
         {
             Send,
             Recv,
         }
-
         public enum MessageType : short
         {
             UNKNOWN,
@@ -43,191 +25,188 @@ namespace ProtocolTesterLib.Messages
             REPORT_KPI,
             REPORT_EVENT,
         }
+        public class MessageArgument
+        {
+            public readonly string MessageString;
+            public readonly CommMode MessageCommMode;
+            public readonly DateTime MessageTime;
+            public readonly string MessageProtocolVersion;
+            private const string DefaultMessageProtocolVerstion = "";
+            public string CleanMessage { get { return this.MessageString.Trim('\r'); } }
 
-        #region [ MessageType ]
-        public static MessageType[] SupportedTypes = 
-        {
-            MessageType.GET_CONFIG,
-            MessageType.GET_STATUS,
-            MessageType.UPDATE_STATUS,
-            MessageType.REPORT_UNIT_LOCATION,
-            MessageType.REPORT_RESULT,
-            MessageType.REPORT_KPI,
-            MessageType.REPORT_EVENT,
-        };
-        public static string[] SupportedTypeStrings =
-        {
-            MessageType.GET_CONFIG.ToString(),
-            MessageType.GET_STATUS.ToString(),
-            MessageType.UPDATE_STATUS.ToString(),
-            MessageType.REPORT_UNIT_LOCATION.ToString(),
-            MessageType.REPORT_RESULT.ToString(),
-            MessageType.REPORT_KPI.ToString(),
-            MessageType.REPORT_EVENT.ToString(),
-        };
-        public static bool isSupportedType(string type)
-        {
-            if (type == null || type.Length <= 0)
-                return false;
-            
-            foreach (string aType in SupportedTypeStrings)
+            public MessageArgument(string str, CommMode mode, DateTime time)
             {
-                if (aType.Equals(type))
-                {
-                    return true;
-                }
+                this.MessageString = str != null ? string.Copy(str) : string.Empty;
+                this.MessageCommMode = mode;
+                this.MessageTime = time != null ? time : DateTime.Now;
+                this.MessageProtocolVersion = DefaultMessageProtocolVerstion;
             }
-            return false;
-        }
-        #endregion
-
-        #region [Constant]
-        protected const int MinFieldCount = 2;
-        protected const int MsgIDIndex = 0;
-        protected const int MsgTypeIndex = 1;
-        #endregion
-
-        #region [ Data ]
-        private MessageInfo _Info;
-        protected List<string> _Fields;
-        protected List<MessageError> _Errors;
-        protected MessageType _Type;
-
-        public string[] Fields { get { return _Fields.ToArray(); } }
-        public int FieldCount { get { return _Fields.Count; } }
-        public string MessageString { get { return _Info.MsgString; } }
-        public MessageMode Mode { get { return _Info.MsgMode; } }
-        public DateTime Time { get { return _Info.MsgTime; } }
-        public MessageError[] Errors { get { return _Errors.ToArray(); } }
-        public MessageType Type { get { return _Type; } protected set { _Type = value; } }
-        #endregion
-
-        #region [ Life Circle ]
-        protected Message(MessageInfo info, string[] fields = null)
-        {
-            _Info = info;
-            _Fields = new List<string>((fields != null && fields.Length > 0) ? fields : new string[0]);
-            _Errors = new List<MessageError>();
-            _Type = MessageType.UNKNOWN;
-        }
-        #endregion
-
-        #region [ Factory Methods ]
-        public static string[] FieldsFromString(string str)
-        {
-            string[] ret = null;
-            if (str != null && str.Length > 0)
+            public MessageArgument(string str, CommMode mode, DateTime time, string ver)
             {
-                ret = str.Trim(' ', '\r').Split(',');
+                this.MessageString = str != null ? string.Copy(str) : string.Empty;
+                this.MessageCommMode = mode;
+                this.MessageTime = time != null ? time : DateTime.Now;
+                this.MessageProtocolVersion = (string.IsNullOrWhiteSpace(ver)) ? DefaultMessageProtocolVerstion : ver;
             }
-
-            return ret != null ? ret : new string[0];
         }
-        public static Message MesssageFromString(string str, MessageMode mode, DateTime time)
+        #endregion
+
+        #region [ Factory ]
+        public static Message CreateMessage(MessageArgument arg)
         {
+            if (arg == null)
+            {
+                return new Message();
+            }
+            // Empty string?
             Message ret = null;
-            MessageInfo info = new MessageInfo(str, mode, time);
-
-            if (str == null || str.Length <= 0)
+            if (string.IsNullOrWhiteSpace(arg.MessageString))
             {
-                ret = new Message(info);
+                ret = new Message(arg);
                 ret.AddFormatError("Empty message string");
                 return ret;
             }
-
-            string[] fields = Message.FieldsFromString(str);
+            // Has enough fields?
+            string[] fields = arg.CleanMessage.Split(',');
             if (fields.Length < Message.MinFieldCount)
             {
-                ret = new Message(info);
+                ret = new Message(arg, fields, MessageType.UNKNOWN);
                 ret.AddFormatError("Message doesn't have at least 2 fields");
                 return ret;
             }
-
-            string type = fields[Message.MsgTypeIndex];
-            if (!Message.isSupportedType(type))
+            // Has good command type?
+            MessageType type = MessageType.UNKNOWN;
+            if (!Enum.TryParse(fields[Message.MsgTypeIndex], out type))
             {
-                ret = new Message(info);
+                ret = new Message(arg, fields, MessageType.UNKNOWN);
                 ret.AddFormatError("Unsupported message type");
                 return ret;
             }
-
-            if (type.Equals(MessageType.REPORT_UNIT_LOCATION.ToString()))
+            // Create subclass
+            switch (type)
             {
-                ret = new ReportLocationMessage(info, fields);
+                case MessageType.REPORT_UNIT_LOCATION:
+                    ret = new ReportLocationMessage(arg, fields, type);
+                    break;
+                case MessageType.REPORT_EVENT:
+                    ret = new ReportEventMessage(arg, fields, type);
+                    break;
+                case MessageType.REPORT_KPI:
+                    //ret = new ReportLocationMessage(arg, fields, type);
+                    break;
+                case MessageType.REPORT_RESULT:
+                    ret = new ReportResultMessage(arg, fields, type);
+                    break;
+                default:
+                    // should never go here
+                    ret = new Message(arg, fields, type);
+                    ret.AddFormatError("Unknown format error");
+                    return ret;
             }
-            else if (type.Equals(MessageType.REPORT_EVENT.ToString()))
-            {
-                ret = new ReportEventMessage(info, fields);
-            }
-            else if (type.Equals(MessageType.REPORT_KPI.ToString()))
-            {
-                ret = new ReportKPIMessage(info, fields);
-            }
-            else if (type.Equals(MessageType.REPORT_RESULT.ToString()))
-            {
-                ret = new ReportResultMessage(info, fields);
-            }
-
-            if (ret == null)
-            {
-                ret = new Message(info);
-                ret.AddFormatError("Unknown format error");
-                return ret;
-            }
+            // Check detail
+            ret.Process();
             return ret;
         }
+        public static Message CreateMessage(string str, CommMode mode, DateTime time)
+        {
+            return CreateMessage(new MessageArgument(str, mode, time));
+        }
+        public static Message CreateMessage(string str, CommMode mode, DateTime time, string ver)
+        {
+            return CreateMessage(new MessageArgument(str, mode, time, ver));
+        }
         #endregion
 
-        #region [ Errors ]
-        public void AddError(MessageError error)
+        #region [ Fields ]
+        protected const int MinFieldCount = 2;
+        protected const int MsgIDIndex = 0;
+        protected const int MsgTypeIndex = 1;
+        protected List<string> _Fields;
+        protected List<MessageFieldConfig> _FieldConfigs;
+        public string[] Fields { get { return _Fields.ToArray(); } }
+        public int FieldCount { get { return _Fields.Count; } }
+        private void InitFieldConfig()
         {
-            if (error != null)
-            {
-                _Errors.Add(error);
-            }
+            _Fields = new List<string>();
+            _FieldConfigs = new List<MessageFieldConfig>();
+            _FieldConfigs.Add(new MessageFieldConfig(MsgIDIndex, "Message ID", typeof(int)));
+            _FieldConfigs.Add(new MessageFieldConfig(MsgTypeIndex, "Command ID"));
         }
-
-        public void AddError(string strErrorMsg, MessageError.ErrorType type = MessageError.ErrorType.Alarm)
+        protected virtual bool CheckFields()
         {
-            if (strErrorMsg != null && strErrorMsg.Length > 0)
+            bool isFieldsGood = true;
+            foreach (MessageFieldConfig aConfig in _FieldConfigs)
             {
-                _Errors.Add(new MessageError(strErrorMsg, type));
-            }
-        }
-        
-        public void AddFormatError(string strErrorMsg)
-        {
-            AddError(strErrorMsg, MessageError.ErrorType.Format);
-        }
-
-        public bool HasError(MessageError.ErrorType type)
-        {
-            foreach (MessageError anError in _Errors)
-            {
-                if (anError.Type == type)
+                // 1st. Check field presence
+                if (!HasField(aConfig.Index))
                 {
-                    return true;
+                    AddFormatError(string.Format("'{0}' has no {1} field", this.Type, aConfig.PrettyName));
+                    return false;
+                }
+                // 2nd. Check empty string
+                string fieldString = FieldAtIndex(aConfig.Index).Trim();
+                if (string.IsNullOrWhiteSpace(fieldString))
+                {
+                    if (!aConfig.AllowsEmpty)
+                    {
+                        AddFormatError(string.Format("'{0}' has empty {1} field", this.Type, aConfig.PrettyName));
+                        isFieldsGood = false;
+                    }
+                    else
+                    {
+                        AddWarn(string.Format("'{0}' has empty {1} field", this.Type, aConfig.PrettyName));
+                    }
+                    continue;
+                }
+                // 3rd. Check good data format
+                if (aConfig.DataType == typeof(int))
+                {
+                    if (!isGoodInt(fieldString))
+                    {
+                        AddFormatError(string.Format("'{0}' requires integer for {1} field, but '{2}' is not a good one", this.Type, aConfig.PrettyName, fieldString));
+                        isFieldsGood = false;
+                    }
+                }
+                else if (aConfig.DataType == typeof(double))
+                {
+                    if (!isGoodDouble(fieldString))
+                    {
+                        AddFormatError(string.Format("'{0}' requires number for {1} field, but '{2}' is not a good one", this.Type, aConfig.PrettyName, fieldString));
+                        isFieldsGood = false;
+                    }
+                }
+                else if (aConfig.DataType.IsEnum)
+                {
+                    if (!isGoodEnum(aConfig.DataType, fieldString))
+                    {
+                        AddFormatError(string.Format("'{0}' has undefined string '{2} in {1} field'", this.Type, aConfig.PrettyName, fieldString));
+                        isFieldsGood = false;
+                    }
                 }
             }
-            return false;
+            return isFieldsGood;
         }
-        public bool HasAlarm()
+        protected MessageFieldConfig FieldConfigWithIndex(int index)
         {
-            return HasError(MessageError.ErrorType.Alarm);
+            foreach (MessageFieldConfig aConfig in _FieldConfigs)
+            {
+                if (aConfig.Index == index)
+                    return aConfig;
+            }
+            return null;
         }
-
-        public bool HasFormatError()
+        protected MessageFieldConfig FieldConfigWithName(string name)
         {
-            return HasError(MessageError.ErrorType.Format);
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                foreach (MessageFieldConfig aConfig in _FieldConfigs)
+                {
+                    if (aConfig.Name.Equals(name))
+                        return aConfig;
+                }
+            }
+            return null;
         }
-
-        public bool HasWarning()
-        {
-            return HasError(MessageError.ErrorType.Warn);
-        }
-        #endregion
-
-        #region [ Field Access]
         protected bool HasField(int index)
         {
             if (index >= 0 && index < _Fields.Count)
@@ -256,23 +235,185 @@ namespace ProtocolTesterLib.Messages
             }
             return defaultVal;
         }
+        protected double DoubleFieldAtIndex(int index, double defaultVal = double.MinValue)
+        {
+            if (HasField(index))
+            {
+                double ret;
+                if (double.TryParse(_Fields[index], out ret))
+                {
+                    return ret;
+                }
+            }
+            return defaultVal;
+        }
         protected bool isGoodInt(string str)
         {
-            int tmp;
-            return int.TryParse(str, out tmp);
+           return !System.Text.RegularExpressions.Regex.IsMatch(str, "\\d");
         }
         protected bool isGoodDouble(string str)
         {
             double tmp;
             return double.TryParse(str, out tmp);
         }
+        protected bool isGoodEnum(Type enumType, string str)
+        {
+            try
+            {
+                System.Enum.Parse(enumType, str);
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
+        protected class MessageFieldConfig
+        {
+            public readonly int Index;
+            public readonly string Name;
+            public readonly Type DataType;
+            public readonly bool AllowsEmpty;
+            public string PrettyName { get { return string.Format("<{0}>", this.Name); } }
+            public MessageFieldConfig(int index, string name, Type dataType, bool allowsEmpty)
+            {
+                this.Index = index;
+                this.Name = name;
+                this.AllowsEmpty = allowsEmpty;
+                this.DataType = dataType;
+            }
+            public MessageFieldConfig(int index, string name, Type dataType) : this(index, name, dataType, false) { }
+            public MessageFieldConfig(int index, string name) : this(index, name, typeof(string), false) { }
+        }
+        #endregion
+
+        #region [ Data ]
+        private MessageArgument _Argument;
+        protected List<MessageInfo> _AllInfo;
+        protected MessageType _Type;
+        public string MessageString { get { return _Argument.MessageString; } }
+        public CommMode Mode { get { return _Argument.MessageCommMode; } }
+        public DateTime Time { get { return _Argument.MessageTime; } }
+        public MessageInfo[] AllInfo { get { return _AllInfo.ToArray(); } }
+        public MessageType Type { get; private set; }
+        
+        #endregion
+
+        #region [ Life Circle ]
+        private Message()
+        {
+            _Argument = new MessageArgument("", CommMode.Send, DateTime.Now);
+            _AllInfo = new List<MessageInfo>();
+            _Type = MessageType.UNKNOWN;
+            InitFieldConfig();
+
+            AddFormatError("Invalid message argument");
+        }
+        protected Message(MessageArgument arg) : this(arg, null, MessageType.UNKNOWN)
+        {
+        }
+        protected Message(MessageArgument arg, string[] fields, MessageType type)
+        {
+            _Argument = arg;
+            _AllInfo = new List<MessageInfo>();
+            _Type = type;
+
+            InitFieldConfig();
+            if (fields != null)
+            {
+                _Fields.AddRange(fields);
+            }
+        }
+        #endregion
+
+        #region [ Errors ]
+        public void AddInfo(MessageInfo info)
+        {
+            if (info != null)
+            {
+                _AllInfo.Add(info);
+            }
+        }
+        public void AddInfo(string strInfo, MessageInfo.InfoType type)
+        {
+            if (string.IsNullOrWhiteSpace(strInfo))
+                return;
+            if (!Enum.IsDefined(typeof(MessageInfo.InfoType), type))
+                return;
+
+            AddInfo(new MessageInfo(strInfo, type));
+        }
+        public void AddInfoString(string strInfo)
+        {
+            AddInfo(strInfo, MessageInfo.InfoType.Info);
+        }        
+        public void AddFormatError(string strInfo)
+        {
+            AddInfo(strInfo, MessageInfo.InfoType.Format);
+        }
+        public void AddAlarm(string strInfo)
+        {
+            AddInfo(strInfo, MessageInfo.InfoType.Alarm);
+        }
+        public void AddWarn(string strInfo)
+        {
+            AddInfo(strInfo, MessageInfo.InfoType.Warn);
+        }
+        public bool HasError(MessageInfo.InfoType type)
+        {
+            foreach (MessageInfo anInfo in _AllInfo)
+            {
+                if (anInfo.Type == type)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public bool HasError(params MessageInfo.InfoType[] types)
+        {
+            if (types != null && types.Length > 0)
+            {
+                foreach (MessageInfo anInfo in _AllInfo)
+                {
+                    if (Array.IndexOf(types, anInfo.Type) > 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        public bool HasAlarm()
+        {
+            return HasError(MessageInfo.InfoType.Alarm);
+        }
+        public bool HasFormatError()
+        {
+            return HasError(MessageInfo.InfoType.Format);
+        }
+        public bool HasWarning()
+        {
+            return HasError(MessageInfo.InfoType.Warn);
+        }
         #endregion
 
         #region [ Process Message ]
         public virtual void Process()
         {
-            // No action in base implementation
-            // derived class should override this method
+            if (!CheckFields())
+                return;
+
+            if (!CheckData())
+                return;
+        }
+
+        protected virtual bool CheckData()
+        {
+            if (HasFormatError())
+                return false;
+
+            return true;
         }
         #endregion
     }

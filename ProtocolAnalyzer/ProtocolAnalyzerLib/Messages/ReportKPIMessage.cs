@@ -4,13 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProtocolTesterLib
+namespace ProtocolAnalyzerLib
 {
     class ReportKPIMessage : Message
     {
         #region [ Constant ]
         protected const int UUTIDIndex = 2;
         protected const int KPIStartIndex = 3;
+        private void InitFieldConfig()
+        {
+            _FieldConfigs.Add(new MessageFieldConfig(UUTIDIndex, "Unit ID", typeof(string)));
+        }
         #endregion
 
         #region [ Data ]

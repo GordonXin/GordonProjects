@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using ProtocolAnalyzerLib;
 
 namespace ProtocolAnalyzerUI
 {
@@ -23,13 +24,15 @@ namespace ProtocolAnalyzerUI
         #endregion
 
         #region [ Methods ]
-        public void StartWithConfig(Comm.CommConfig aConfig)
+        public void StartWithConfig(Comm.CommConfig aConfig, string configFile)
         {
             Stop();
 
             Comm.CommManager mgr = Comm.CommManager.Instance();
             mgr.CommStateChangedEvent += new Comm.CommStateChangedHandler(this.CommStateChangedHandler);
             mgr.StartCommWithConfig(aConfig);
+
+            ProtocolAnalyzerLib.ProtocolAnalyzer.Instance().InitWithConfigFilePath(configFile);
         }
         public void Stop()
         {

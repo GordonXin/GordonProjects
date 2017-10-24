@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProtocolTesterLib
+namespace ProtocolAnalyzerLib
 {
     class UUTManager
     {
@@ -20,21 +20,21 @@ namespace ProtocolTesterLib
         {
             _uutMap = new Dictionary<string, UUT>();
         }
+        public void Reset()
+        {
+            _uutMap.Clear();
+        }
         #endregion
 
         #region [ UUTs ]
-        public UUT UUTWithIdentifier(string strIdentifier, bool createNewIfNotExist = false)
+        public UUT UUTWithIdentifier(string strIdentifier)
         {
             UUT ret = null;
-            if (strIdentifier != null && strIdentifier.Length > 0)
+            if (!string.IsNullOrWhiteSpace(strIdentifier))
             {
                 if (_uutMap.ContainsKey(strIdentifier))
                 {
                     ret = _uutMap[strIdentifier];
-                }
-                if (ret == null && createNewIfNotExist)
-                {
-                    ret = AddUUT(strIdentifier);
                 }
             }
             return ret;
@@ -42,7 +42,7 @@ namespace ProtocolTesterLib
         public UUT AddUUT(string strIdentifier)
         {
             UUT ret = null;
-            if (strIdentifier != null && strIdentifier.Length > 0)
+            if (!string.IsNullOrWhiteSpace(strIdentifier))
             {
                 ret = _uutMap.ContainsKey(strIdentifier) ? _uutMap[strIdentifier] : null;
                 if (ret == null)
@@ -55,7 +55,7 @@ namespace ProtocolTesterLib
         }
         public void RemoveUUT(string strIdentifier)
         {
-            if (strIdentifier != null && strIdentifier.Length > 0)
+            if (!string.IsNullOrWhiteSpace(strIdentifier))
             {
                 if (_uutMap.ContainsKey(strIdentifier))
                 {

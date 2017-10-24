@@ -4,14 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProtocolTesterLib
+namespace ProtocolAnalyzerLib
 {
     class UnloadFunction : Function
     {
-        #region [ Data ]
-
-        #endregion
-
         #region [ Life Circle ]
         public UnloadFunction(string strName) : base(strName)
         {
@@ -25,15 +21,15 @@ namespace ProtocolTesterLib
 
             if (!anUUT.isLoaded)
             {
-                aMessage.AddError(string.Format("UUT '{0}' is not ever Loaded but it's unloaded now", anUUT.Identifier));
+                aMessage.AddAlarm(string.Format("UUT '{0}' is not ever Loaded but it's unloaded now", anUUT.Identifier));
             }
             if (anUUT.isUnloaded)
             {
-                aMessage.AddError(string.Format("UUT '{0}' is double Unloaded", anUUT.Identifier));
+                aMessage.AddAlarm(string.Format("UUT '{0}' is double Unloaded", anUUT.Identifier));
             }
-            if (anUUT.Result.Equals(MessageResult.Unknown))
+            if (!anUUT.hasResult)
             {
-                aMessage.AddError(string.Format("UUT '{0}' is Unloaded before have any valid result", anUUT.Identifier));
+                aMessage.AddAlarm(string.Format("UUT '{0}' is Unloaded before have any valid result", anUUT.Identifier));
             }
         }
         public override void UUTDidEnterLocation(UUT anUUT, Location aLocation, Message aMessage)

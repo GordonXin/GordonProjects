@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
-namespace ProtocolTesterLib
+namespace ProtocolAnalyzerLib
 {
-    class Slot : IDisposable
+    class Slot
     {
-        #region [ Exceptions ]Exceptions ]
+        #region [ Exceptions ]
         public class SlotException : Exception
         {
             public SlotException(string strMessage) : base(strMessage) { }
@@ -19,7 +19,6 @@ namespace ProtocolTesterLib
         #region [ Data ]
         protected string _Locator;
         protected List<Location> _LocationList;
-
         public string Locator { get { return _Locator; } protected set { _Locator = value != null ? value : string.Empty; } }
         public Location[] Locations { get { return _LocationList.ToArray(); } }
         #endregion
@@ -29,32 +28,6 @@ namespace ProtocolTesterLib
         {
             this.Locator = string.Copy(strLocator);
             _LocationList = new List<Location>();
-        }
-
-        private bool disposedValue = false; // To detect redundant calls
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    // TODO: dispose managed state (managed objects).
-                }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
-
-                disposedValue = true;
-            }
-        }
-
-        // This code added to correctly implement the disposable pattern.
-        void IDisposable.Dispose()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
         }
         #endregion
 
@@ -69,19 +42,17 @@ namespace ProtocolTesterLib
         }
         public Location LocationWithLocator(string strLocationLocator)
         {
-            Location ret = null;
-            if (strLocationLocator != null && strLocationLocator.Length > 0)
+            if (!string.IsNullOrWhiteSpace(strLocationLocator))
             {
                 foreach(Location aLocation in _LocationList)
                 {
                     if (aLocation.Locator.Equals(strLocationLocator))
                     {
-                        ret = aLocation;
-                        break;
+                        return aLocation;
                     }
                 }
             }
-            return ret;
+            return null;
         }
         virtual public void SetupLocations()
         {
@@ -131,20 +102,18 @@ namespace ProtocolTesterLib
         }
         private int IndexOfLocationWithFunction(string strFunction)
         {
-            int ret = -1;
             if (strFunction != null && strFunction.Length > 0)
             {
                 for (int i = 0; i < _LocationList.Count; ++i)
                 {
                     if (_LocationList[i].Function.Equals(strFunction))
                     {
-                        ret = i;
-                        break;
+                        return i;
                     }
                 }
             }
 
-            return ret;
+            return -1;
         }
 
         public Location FirstLocation { get { return _LocationList.Count > 0 ? _LocationList[0] : null; } }
@@ -166,21 +135,7 @@ namespace ProtocolTesterLib
             {
                 return false;
             }
-            return hasLocation(pLocation.Locator);
-        }
-
-        virtual public bool hasLocation(string strLocationLocator)
-        {
-            bool ret = false;
-            foreach(Location aLocation in _LocationList)
-            {
-                if (aLocation.Locator.Equals(strLocationLocator))
-                {
-                    ret = true;
-                    break;
-                }
-            }
-            return ret;
+            return (LocationWithLocator(pLocation.Locator) != null);
         }
         #endregion
     }

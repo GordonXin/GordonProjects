@@ -4,39 +4,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProtocolTesterLib.Messages
+namespace ProtocolAnalyzerLib
 {
-    public class MessageError
+    public class MessageInfo
     {
         #region [ Definitions ]
-        public enum ErrorType : short
+        public enum InfoType : short
         {
             Format,
             Alarm,
             Warn,
+            Info,
         }
         #endregion
 
         #region [ Data ]
         protected string _Message;
-        protected ErrorType _Type;
-
         public string Message { get { return TranslateMessage(); } protected set { _Message = value != null ? value : string.Empty; } }
-        public ErrorType Type { get; protected set; }
+        public InfoType Type { get; protected set; }
         #endregion
 
         #region [ Life Circle ]
-        public MessageError(string strErrorMessage, ErrorType nType)
+        public MessageInfo(string strErrorMessage, InfoType nType)
         {
-            this.Message = strErrorMessage;
+            this.Message = string.Copy(strErrorMessage);
             this.Type = nType;
         }
         #endregion
 
-        #region [ Message ]
+        #region [ Format Message ]
         private string TranslateMessage()
         {
-            return string.Format("[{0}] {1}", _Type, _Message);
+            return string.Format("[{0}] {1}", this.Type, _Message);
         }
         #endregion
     }

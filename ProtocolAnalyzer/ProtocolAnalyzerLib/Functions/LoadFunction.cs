@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProtocolTesterLib
+namespace ProtocolAnalyzerLib
 {
     class LoadFunction : Function
     {
@@ -24,11 +24,11 @@ namespace ProtocolTesterLib
             if (anUUT == null || aLocation == null || aMessage == null) return;
             if (anUUT.isLoaded)
             {
-                aMessage.AddError(string.Format("UUT '{0}' is already Loaded", anUUT.Identifier));
+                aMessage.AddAlarm(string.Format("UUT '{0}' is already Loaded", anUUT.Identifier));
             }
             if (anUUT.isUnloaded)
             {
-                aMessage.AddError(string.Format("UUT '{0}' is Unloaded", anUUT.Identifier));
+                aMessage.AddAlarm(string.Format("UUT '{0}' is Unloaded", anUUT.Identifier));
             }
         }
         public override void UUTDidLeaveLocation(UUT anUUT, Location aLocation, Message aMessage)
@@ -37,7 +37,7 @@ namespace ProtocolTesterLib
 
             anUUT.isLoaded = true;
             anUUT.isUnloaded = false;
-            anUUT.Result = MessageResult.Unknown;
+            anUUT.Result = (UUTResult)(-1);
         }
         #endregion
     }

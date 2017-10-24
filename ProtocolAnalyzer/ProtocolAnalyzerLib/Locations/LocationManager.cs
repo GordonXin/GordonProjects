@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using Sapphire.Xml;
 
-namespace ProtocolTesterLib
+namespace ProtocolAnalyzerLib
 {
     class LocationManager
     {
         #region [ Data ]
         protected Dictionary<string, Slot> _SlotMap;
-
         public Slot[] SlotList { get { return _SlotMap.Values.ToArray<Slot>(); } }
         #endregion
 
@@ -25,9 +25,21 @@ namespace ProtocolTesterLib
         {
         }
 
+        public void Reset()
+        {
+            _SlotMap.Clear();
+        }
+
         #endregion
 
         #region [ Locations & Slots ]
+        public void AddLocation(string locationConfig)
+        {
+            SimpleXmlParser sp = new SimpleXmlParser();
+            sp.OpenInfo(locationConfig, false);
+
+            AddLocation(sp.GetData("/Location/Name"), sp.GetData("/Location/Function"));
+        }
         public void AddLocation(string strLocator, string strFunction)
         {
             if (strLocator != null && strLocator.Length > 0)

@@ -22,8 +22,6 @@ D:\Code\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\ProtocolAnalyzerUI.csproj.
 D:\Code\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\WindowsFormsApplication1.exe
 D:\Code\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\WindowsFormsApplication1.pdb
 D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\bin\Debug\WindowsFormsApplication1.exe.config
-D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\WindowsFormsApplication1.exe
-D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\WindowsFormsApplication1.pdb
 D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\bin\Debug\WindowsFormsApplication1.exe
 D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\bin\Debug\WindowsFormsApplication1.pdb
 D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\bin\Debug\ProtocolAnalyzerLib.dll
@@ -35,3 +33,9 @@ D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\ProtocolAna
 D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\ProtocolAnalyzerUI.frmMain.resources
 D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\ProtocolAnalyzerUI.Properties.Resources.resources
 D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\ProtocolAnalyzerUI.csproj.GenerateResource.Cache
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\bin\Debug\SapphireXml.dll
+D:\Code\GordonProjects\ProtocolAnalyzer\bin\ProtocolAnalyzer.exe.config
+D:\Code\GordonProjects\ProtocolAnalyzer\bin\ProtocolAnalyzer.exe
+D:\Code\GordonProjects\ProtocolAnalyzer\bin\ProtocolAnalyzer.pdb
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\ProtocolAnalyzer.exe
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\ProtocolAnalyzer.pdb

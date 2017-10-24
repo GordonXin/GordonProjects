@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProtocolTesterLib
+namespace ProtocolAnalyzerLib
 {
     class FunctionManager
     {
@@ -65,6 +65,10 @@ namespace ProtocolTesterLib
             {
                 aFun.UUTDidLeaveLocation(anUUT, aLocation, aMessage);
             }
+        }
+        public void Reset()
+        {
+            _FunctionMap.Clear();
         }
         #endregion
     }
