@@ -21,3 +21,17 @@ D:\Code\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\ProtocolAnalyzerUI.Propert
 D:\Code\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\ProtocolAnalyzerUI.csproj.GenerateResource.Cache
 D:\Code\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\WindowsFormsApplication1.exe
 D:\Code\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\WindowsFormsApplication1.pdb
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\bin\Debug\WindowsFormsApplication1.exe.config
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\WindowsFormsApplication1.exe
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\WindowsFormsApplication1.pdb
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\bin\Debug\WindowsFormsApplication1.exe
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\bin\Debug\WindowsFormsApplication1.pdb
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\bin\Debug\ProtocolAnalyzerLib.dll
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\bin\Debug\ProtocolAnalyzerLib.pdb
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\ProtocolAnalyzerUI.csprojResolveAssemblyReference.cache
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\ProtocolAnalyzerUI.Controls.ControlComm.resources
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\ProtocolAnalyzerUI.Controls.ControlCommMode.resources
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\ProtocolAnalyzerUI.Controls.ControlFilePath.resources
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\ProtocolAnalyzerUI.frmMain.resources
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\ProtocolAnalyzerUI.Properties.Resources.resources
+D:\Code\GordonProjects\ProtocolAnalyzer\ProtocolAnalyserUI\obj\Debug\ProtocolAnalyzerUI.csproj.GenerateResource.Cache
