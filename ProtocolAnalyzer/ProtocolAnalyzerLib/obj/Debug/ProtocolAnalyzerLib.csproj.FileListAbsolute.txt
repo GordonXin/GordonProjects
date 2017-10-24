@@ -1,0 +1,5 @@
+D:\Code\ProtocolAnalyzer\ProtocolAnalyzerLib\bin\Debug\ProtocolAnalyzerLib.dll
+D:\Code\ProtocolAnalyzer\ProtocolAnalyzerLib\bin\Debug\ProtocolAnalyzerLib.pdb
+D:\Code\ProtocolAnalyzer\ProtocolAnalyzerLib\obj\Debug\ProtocolAnalyzerLib.csprojResolveAssemblyReference.cache
+D:\Code\ProtocolAnalyzer\ProtocolAnalyzerLib\obj\Debug\ProtocolAnalyzerLib.dll
+D:\Code\ProtocolAnalyzer\ProtocolAnalyzerLib\obj\Debug\ProtocolAnalyzerLib.pdb

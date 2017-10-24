@@ -1,0 +1,16 @@
+
+*.pdb
+ProtocolAnalyzer/ProtocolAnalyserUI/bin/Debug/WindowsFormsApplication1.exe
+ProtocolAnalyzer/ProtocolAnalyserUI/bin/Debug/WindowsFormsApplication1.vshost.exe.config
+ProtocolAnalyzer/ProtocolAnalyserUI/bin/Debug/WindowsFormsApplication1.vshost.exe.manifest
+ProtocolAnalyzer/ProtocolAnalyserUI/bin/Debug/WindowsFormsApplication1.vshost.exe
+ProtocolAnalyzer/ProtocolAnalyserUI/bin/Debug/WindowsFormsApplication1.exe.config
+*.cache
+ProtocolAnalyzer/ProtocolAnalyserUI/obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
+ProtocolAnalyzer/ProtocolAnalyserUI/obj/Debug/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs
+ProtocolAnalyzer/ProtocolAnalyserUI/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs
+ProtocolAnalyzer/ProtocolAnalyserUI/obj/Debug/WindowsFormsApplication1.exe
+ProtocolAnalyzer/ProtocolAnalyserUI/obj/Debug/WindowsFormsApplication1.csproj.FileListAbsolute.txt
+ProtocolAnalyzer/ProtocolAnalyzerLib/obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
+ProtocolAnalyzer/ProtocolAnalyzerLib/obj/Debug/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs
+ProtocolAnalyzer/ProtocolAnalyzerLib/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs
