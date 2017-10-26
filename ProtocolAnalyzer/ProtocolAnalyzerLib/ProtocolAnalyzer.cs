@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Sapphire.Xml;
+using System.Diagnostics;
+using System.Threading;
 
 namespace ProtocolAnalyzerLib
 {
@@ -82,10 +84,10 @@ namespace ProtocolAnalyzerLib
             {
                 KPIMgr.AddKPI(aConfig);
             }
-
+            
             return errors.ToArray();
         }
-        Message HandleMessage(string msg, DateTime time, Message.CommMode mode)
+        public Message HandleMessage(string msg, DateTime time, Message.CommMode mode)
         {
             return Message.CreateMessage(msg, mode, time);
         }
@@ -93,7 +95,28 @@ namespace ProtocolAnalyzerLib
 
         public void TestRun()
         {
+            //PrintDebug(HandleMessage("", DateTime.Now, Message.CommMode.Send));
+            //PrintDebug(HandleMessage("0", DateTime.Now, Message.CommMode.Send));
+            //PrintDebug(HandleMessage("0,", DateTime.Now, Message.CommMode.Send));
 
+            //PrintDebug(HandleMessage("0,REPORT_UNIT_LOCATION", DateTime.Now, Message.CommMode.Send));
+            //PrintDebug(HandleMessage("0,REPORT_UNIT_LOCATION,ABC", DateTime.Now, Message.CommMode.Send));
+            //PrintDebug(HandleMessage("0,REPORT_UNIT_LOCATION,ABC,RIGHT", DateTime.Now, Message.CommMode.Send));
+            //PrintDebug(HandleMessage("0,REPORT_UNIT_LOCATION,,RIGHT", DateTime.Now, Message.CommMode.Send));
+
+            //PrintDebug(HandleMessage("0,REPORT_RESULT", DateTime.Now, Message.CommMode.Send));
+            //PrintDebug(HandleMessage("0,REPORT_RESULT,abc", DateTime.Now, Message.CommMode.Send));
+            //PrintDebug(HandleMessage("0,REPORT_RESULT,abc,pass", DateTime.Now, Message.CommMode.Send));
+        }
+        private void PrintDebug(Message aMessage)
+        {
+            Debug.Print(aMessage.MessageString);
+            foreach (MessageInfo anInfo in aMessage.AllInfo)
+            {
+                Debug.Print(anInfo.Message);
+            }
+            Debug.Print("");
+            Thread.Sleep(100);
         }
     }
 }

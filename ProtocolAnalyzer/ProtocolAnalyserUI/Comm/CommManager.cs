@@ -108,8 +108,11 @@ namespace ProtocolAnalyzerUI.Comm
             {
                 fireStateChangedEvent("ThreadException", string.Format("{0} met excpetion: {1}", _CommThread.Name, ex.Message));
             }
+            finally
+            {
 
-            fireStateChangedEvent("ThreadEnd", string.Format("{0} is ended", _CommThread.Name));
+                fireStateChangedEvent("ThreadEnd", string.Format("{0} is ended", _CommThread.Name));
+            }
         }
         private void MainLoop(CommConfig aConfig, ref CommBase aComm)
         {
@@ -200,9 +203,7 @@ namespace ProtocolAnalyzerUI.Comm
         public event CommStateChangedHandler CommStateChangedEvent;
         private void fireStateChangedEvent(string state, string message)
         {
-            CommStateEventArgs arg = new CommStateEventArgs();
-            arg.State = state;
-            arg.Message = message;
+            CommStateEventArgs arg = new CommStateEventArgs(state, message);
 
             if (this.CommStateChangedEvent != null)
             {

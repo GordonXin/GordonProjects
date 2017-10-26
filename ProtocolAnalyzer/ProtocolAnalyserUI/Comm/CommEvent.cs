@@ -10,6 +10,12 @@ namespace ProtocolAnalyzerUI.Comm
     {
         public string State { set; get; }
         public string Message { set; get; }
+        public CommStateEventArgs(string state, string msg)
+        {
+            this.State = state;
+            this.Message = msg;
+        }
+
     }
     public delegate void CommStateChangedHandler(object sender, CommStateEventArgs args);
 }

@@ -10,96 +10,51 @@ namespace ProtocolAnalyzerLib
     {
         #region [ Constant ]
         protected const int UUTIDIndex = 2;
-        protected const int KPIStartIndex = 3;
+        protected const int FieldCountForEachKPI = 5;
         private void InitFieldConfig()
         {
             _FieldConfigs.Add(new MessageFieldConfig(UUTIDIndex, "Unit ID", typeof(string)));
+            int remainFieldsCount = this.FieldCount - 1;
+            int KPICount = remainFieldsCount / 5 + ((remainFieldsCount % 5 == 0) ? 0 : 1);
+            int indexOffset = 1;
+            for (int i = 0; i < KPICount; ++i)
+            {
+                _FieldConfigs.Add(new MessageFieldConfig(indexOffset++, "KPI Name", typeof(string)));
+                _FieldConfigs.Add(new MessageFieldConfig(indexOffset++, "KPI Unit", typeof(string)));
+                _FieldConfigs.Add(new MessageFieldConfig(indexOffset++, "KPI Min", typeof(double), true));
+                _FieldConfigs.Add(new MessageFieldConfig(indexOffset++, "KPI Max", typeof(double), true));
+                _FieldConfigs.Add(new MessageFieldConfig(indexOffset++, "KPI Value", typeof(double)));
+            }
         }
         #endregion
 
         #region [ Data ]
-        protected MessageKPI[] _KPIs;
+        //protected MessageKPI[] _KPIs;
         public string UUTID { get { return FieldAtIndex(UUTIDIndex); } }
-        public MessageKPI[] KPIs { get { return _KPIs; } }
+        //public MessageKPI[] KPIs { get { return _KPIs; } }
         #endregion
 
         #region [ Life Circle ]
-        public ReportKPIMessage(Message.MessageInfo info, string[] fields) : base(info, fields) 
+        public ReportKPIMessage(MessageArgument arg, string[] fields, MessageType type) : base(arg, fields, type)
         {
-            this.Type = Message.MessageType.REPORT_KPI;
-
-            if (!HasField(UUTIDIndex))
-            {
-                AddFormatError(string.Format("'{0}' do NOT have <UUT ID> field", this.Type));
-            }
-            int nRemainingCount = this.FieldCount - KPIStartIndex;
-            if ((nRemainingCount % MessageKPI.FieldCount) != 0)
-            {
-                AddFormatError(string.Format("<KPI> list has missing fields", this.Type));
-            }
-            if (HasFormatError()) return;
-            int nStartIndex = KPIStartIndex;
-            List<MessageKPI> listKPI = new List<MessageKPI>();
-            while (nStartIndex < this.FieldCount)
-            {
-                string name = FieldAtIndex(nStartIndex);
-                string unit = FieldAtIndex(nStartIndex + 1);
-                string minString = FieldAtIndex(nStartIndex + 2);
-                string maxString = FieldAtIndex(nStartIndex + 3);
-                string valString = FieldAtIndex(nStartIndex + 4);
-
-                if (name.Length <= 0)
-                {
-                    AddFormatError(string.Format("'{0}' does NOT accept empty <KPI Name>", this.Type));
-                }
-                if (unit.Length <= 0)
-                {
-                    AddFormatError(string.Format("'{0}' does NOT accept empty <KPI Name>", this.Type));
-                }
-                if (minString.Length <= 0)
-                {
-                }
-                else if (isGoodDouble(minString))
-                {
-                    AddFormatError(string.Format("'{0}' does NOT accept KPI Min <{1}>, it has to be a number", this.Type, minString));
-                }
-                if (maxString.Length <= 0)
-                {
-                }
-                else if (isGoodDouble(minString))
-                {
-                    AddFormatError(string.Format("'{0}' does NOT accept KPI Max <{1}>, it has to be a number", this.Type, maxString));
-                }
-                if (valString.Length <= 0)
-                {
-                    AddFormatError(string.Format("'{0}' does NOT accept empty <KPI Name>", this.Type));
-                }
-                else if (isGoodDouble(minString))
-                {
-                    AddFormatError(string.Format("'{0}' does NOT accept KPI Value <{1}>, it has to be a number", this.Type, valString));
-                }
-                MessageKPI aKPI = new MessageKPI(name, unit, minString, maxString, valString);
-                listKPI.Add(aKPI);
-            }
-            _KPIs = listKPI.ToArray();
+            InitFieldConfig();
         }
         #endregion
 
         #region [ Process Message ]
-        public override void Process()
+        protected override bool CheckData()
         {
-            base.Process();
+            if (!base.CheckData())
+                return false;
 
-            if (HasFormatError()) return;
-            // Now we are sure that all fields valid
-
-            UUTManager uutMgr = Tester.getInstance().UUTMgr;
+            UUTManager uutMgr = ProtocolAnalyzer.Instance().UUTMgr;
             UUT anUUT = uutMgr.UUTWithIdentifier(this.UUTID);
             if (anUUT == null)
             {
-                AddError(string.Format("'UUT {0}' is not ever Loaded", this.UUTID));
-                return;
+                AddAlarm(string.Format("UUT '{0}' is not ever Loaded", this.UUTID));
             }
+
+            return true;
         }
         #endregion
     }

@@ -69,6 +69,7 @@ namespace ProtocolAnalyzerUI
         {
             if (_Agent != null)
             {
+                _Agent.AgentEvent -= new ProtocolAnalyzerUI.AgentEventHandler(this.AgentEventHandler);
                 _Agent.Stop();
             }
         }
@@ -78,21 +79,14 @@ namespace ProtocolAnalyzerUI
             {
                 _Agent = new AnalyzerAgent();
                 _Agent.AgentEvent += new ProtocolAnalyzerUI.AgentEventHandler(this.AgentEventHandler);
+                _Agent.CommunicationConfig = this.commControl.Config;
+                _Agent.ConfigFilePath = this.filePathControl.FullPath;
 
-                this.button1.Text = "Stop";
-                this.commControl.Enabled = false;
-                this.filePathControl.Enabled = false;
-                this.tbxMessages.Clear();
-
-                _Agent.StartWithConfig(this.commControl.Config, this.filePathControl.FullPath);
+                _Agent.Start();
             }
             else
             {
                 _Agent.Stop();
-                _Agent = null;
-                this.button1.Text = "Start";
-                this.commControl.Enabled = true;
-                this.filePathControl.Enabled = true;
             }
         }
         private void AgentEventHandler(object sender, AgentEventArgs args)
@@ -102,27 +96,44 @@ namespace ProtocolAnalyzerUI
                 this.BeginInvoke(new AgentEventHandler(this.AgentEventHandler), sender, args);
                 return;
             }
-            this.tbxMessages.Select(this.tbxMessages.TextLength, 0);
+            //this.tbxMessages.Select(this.tbxMessages.TextLength, 0);
             if (args.State.Equals("Exception"))
             {
-                this.tbxMessages.ForeColor = Color.Red;
+                this.tbxMessages.SelectionColor = Color.Red;
                 this.tbxMessages.AppendText(string.Format("{0}\r\n", args.Message));
             }
             else if (args.State.Equals("Info"))
             {
-                this.tbxMessages.ForeColor = Color.Black;
+                this.tbxMessages.SelectionColor = Color.Black;
                 this.tbxMessages.AppendText(string.Format("{0}\r\n", args.Message));
             }
             else if (args.State.Equals("Alarm"))
             {
-                this.tbxMessages.ForeColor = Color.Red;
+                this.tbxMessages.SelectionColor = Color.Red;
                 this.tbxMessages.AppendText(string.Format("{0}\r\n", args.Message));
             }
             else if (args.State.Equals("Warning"))
             {
-                this.tbxMessages.ForeColor = Color.Yellow;
+                this.tbxMessages.SelectionColor = Color.Yellow;
                 this.tbxMessages.AppendText(string.Format("{0}\r\n", args.Message));
             }
+            else if (args.State.Equals("Start"))
+            {
+                this.button1.Text = "Stop";
+                this.commControl.Enabled = false;
+                this.filePathControl.Enabled = false;
+            }
+            else if (args.State.Equals("End"))
+            {
+                this.button1.Text = "Stop";
+                this.commControl.Enabled = false;
+                this.filePathControl.Enabled = false;
+                this.button1.Text = "Start";
+                this.commControl.Enabled = true;
+                this.filePathControl.Enabled = true;
+                _Agent = null;
+            }
+            this.tbxMessages.ScrollToCaret();
         }
         #endregion
 

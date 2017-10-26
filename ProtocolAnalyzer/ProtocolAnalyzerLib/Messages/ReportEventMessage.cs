@@ -56,25 +56,26 @@ namespace ProtocolAnalyzerLib
             if (!base.CheckData())
                 return false;
 
-            //UUTManager uutMgr = Tester.getInstance().UUTMgr;
-            //UUT anUUT = uutMgr.UUTWithIdentifier(this.UUTID);
-            //LocationManager locationMgr = Tester.getInstance().LocationMgr;
-            //Location aLocation = locationMgr.LocationWithLocator(this.Location);
+            UUTManager uutMgr = ProtocolAnalyzer.Instance().UUTMgr;
+            LocationManager locationMgr = ProtocolAnalyzer.Instance().LocationMgr;
+            UUT anUUT = uutMgr.UUTWithIdentifier(this.UUTID);
+            Location aLocation = locationMgr.LocationWithLocator(this.Location);
 
-            //if (this.Location.Length > 0 && aLocation == null)
-            //{
-            //    AddError(string.Format("Location <{0}> is not defined", this.Location));
-            //}
-            //if (this.UUTID.Length > 0 && anUUT == null)
-            //{
-            //    AddError(string.Format("UUT <{0}> is not ever loaded", this.UUTID));
-            //}
-            //if (anUUT == null || aLocation == null) return;
-
-            //if (!aLocation.HasUUT(anUUT.Identifier))
-            //{
-            //    AddError(string.Format("UUT <{0}> is not at Location <{1}>", this.UUTID, this.Location));
-            //}
+            if (this.Location.Length > 0 && aLocation == null)
+            {
+                AddAlarm(string.Format("Location '{0}' is not defined", this.Location));
+            }
+            if (this.UUTID.Length > 0 && anUUT == null)
+            {
+                AddAlarm(string.Format("UUT '{0}' is not ever loaded", this.UUTID));
+            }
+            if (anUUT != null && aLocation != null)
+            {
+                if (!aLocation.HasUUT(anUUT.Identifier))
+                {
+                    AddAlarm(string.Format("UUT '{0}' is not at Location '{1}'", this.UUTID, this.Location));
+                }
+            }
 
             return true;
         }

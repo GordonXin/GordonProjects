@@ -11,4 +11,11 @@ namespace ProtocolAnalyzerLib
         PASS,
         FAIL,
     }
+    public enum FCState : short
+    {
+        AUTOMATION,
+        ALARM,
+        IDLE,
+        MANUAL,
+    }
 }

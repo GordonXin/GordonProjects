@@ -97,6 +97,15 @@ namespace ProtocolAnalyzerLib
                 case MessageType.REPORT_RESULT:
                     ret = new ReportResultMessage(arg, fields, type);
                     break;
+                case MessageType.GET_STATUS:
+                    ret = new GetStatusMessage(arg, fields, type);
+                    break;
+                case MessageType.GET_CONFIG:
+                    ret = new GetConfigMessage(arg, fields, type);
+                    break;
+                case MessageType.UPDATE_STATUS:
+                    ret = new UpdateStatusMessage(arg, fields, type);
+                    break;
                 default:
                     // should never go here
                     ret = new Message(arg, fields, type);
@@ -179,8 +188,31 @@ namespace ProtocolAnalyzerLib
                 {
                     if (!isGoodEnum(aConfig.DataType, fieldString))
                     {
-                        AddFormatError(string.Format("'{0}' has undefined string '{2} in {1} field'", this.Type, aConfig.PrettyName, fieldString));
+                        AddFormatError(string.Format("'{0}' has undefined string '{2}' in {1} field", this.Type, aConfig.PrettyName, fieldString));
                         isFieldsGood = false;
+                    }
+                }
+                else if (aConfig.DataType == typeof(string))
+                {
+                    if (!string.IsNullOrWhiteSpace(aConfig.StringFormat))
+                    {
+                        if (!System.Text.RegularExpressions.Regex.IsMatch(fieldString, aConfig.StringFormat))
+                        {
+                            AddFormatError(string.Format("'{0}' requires '{2}' for {1} field, but '{3}' is not a good one", this.Type, aConfig.PrettyName, aConfig.StringFormat, fieldString));
+                            isFieldsGood = false;
+                        }
+                    }
+                }
+                else if (aConfig.DataType == typeof(DateTime))
+                {
+                    if (!string.IsNullOrWhiteSpace(aConfig.StringFormat))
+                    {
+                        DateTime dt = DateTime.Now;
+                        if (!DateTime.TryParseExact(fieldString, aConfig.StringFormat, null, System.Globalization.DateTimeStyles.None, out dt))
+                        {
+                            AddFormatError(string.Format("'{0}' requires '{2}' for {1} field, but '{3}' is not a good one", this.Type, aConfig.PrettyName, aConfig.StringFormat, fieldString));
+                            isFieldsGood = false;
+                        }
                     }
                 }
             }
@@ -249,7 +281,7 @@ namespace ProtocolAnalyzerLib
         }
         protected bool isGoodInt(string str)
         {
-           return !System.Text.RegularExpressions.Regex.IsMatch(str, "\\d");
+           return System.Text.RegularExpressions.Regex.IsMatch(str, "\\d");
         }
         protected bool isGoodDouble(string str)
         {
@@ -274,6 +306,7 @@ namespace ProtocolAnalyzerLib
             public readonly string Name;
             public readonly Type DataType;
             public readonly bool AllowsEmpty;
+            public readonly string StringFormat;
             public string PrettyName { get { return string.Format("<{0}>", this.Name); } }
             public MessageFieldConfig(int index, string name, Type dataType, bool allowsEmpty)
             {
@@ -281,17 +314,21 @@ namespace ProtocolAnalyzerLib
                 this.Name = name;
                 this.AllowsEmpty = allowsEmpty;
                 this.DataType = dataType;
+                this.StringFormat = null;
             }
             public MessageFieldConfig(int index, string name, Type dataType) : this(index, name, dataType, false) { }
             public MessageFieldConfig(int index, string name) : this(index, name, typeof(string), false) { }
+            public MessageFieldConfig(int index, string name, Type dataType, bool allowsEmpty, string format) : this(index, name, dataType, false)
+            {
+                this.StringFormat = format;
+            }
         }
         #endregion
 
         #region [ Data ]
         private MessageArgument _Argument;
         protected List<MessageInfo> _AllInfo;
-        protected MessageType _Type;
-        public string MessageString { get { return _Argument.MessageString; } }
+        public string MessageString { get { return string.Format("[{2:T}][{0}] {1}",this.Mode==CommMode.Send? "DDD --> FC" : "FC --> DDD",_Argument.MessageString, this.Time); } }
         public CommMode Mode { get { return _Argument.MessageCommMode; } }
         public DateTime Time { get { return _Argument.MessageTime; } }
         public MessageInfo[] AllInfo { get { return _AllInfo.ToArray(); } }
@@ -304,7 +341,7 @@ namespace ProtocolAnalyzerLib
         {
             _Argument = new MessageArgument("", CommMode.Send, DateTime.Now);
             _AllInfo = new List<MessageInfo>();
-            _Type = MessageType.UNKNOWN;
+            this.Type = MessageType.UNKNOWN;
             InitFieldConfig();
 
             AddFormatError("Invalid message argument");
@@ -316,7 +353,7 @@ namespace ProtocolAnalyzerLib
         {
             _Argument = arg;
             _AllInfo = new List<MessageInfo>();
-            _Type = type;
+            this.Type = type;
 
             InitFieldConfig();
             if (fields != null)

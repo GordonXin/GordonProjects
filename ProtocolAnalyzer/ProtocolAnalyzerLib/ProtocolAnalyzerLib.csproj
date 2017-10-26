@@ -55,13 +55,16 @@
     <Compile Include="Locations\Location.cs" />
     <Compile Include="Locations\LocationManager.cs" />
     <Compile Include="Locations\Slot.cs" />
+    <Compile Include="Messages\GetConfigMessage.cs" />
+    <Compile Include="Messages\GetStatusMessage.cs" />
     <Compile Include="Messages\MessageInfo.cs" />
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\ReportEventMessage.cs" />
+    <Compile Include="Messages\ReportKPIMessage.cs" />
     <Compile Include="Messages\ReportLocationMessage.cs" />
     <Compile Include="Messages\ReportResultMessage.cs" />
     <Compile Include="Messages\MessageKPI.cs" />
-    <Compile Include="Messages\MessageResult.cs" />
+    <Compile Include="Messages\UpdateStatusMessage.cs" />
     <Compile Include="ProtocolAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UUTs\UUT.cs" />
